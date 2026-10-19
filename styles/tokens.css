@@ -1,0 +1,60 @@
+/*
+ * Design tokens. Dark obsidian + controlled crimson.
+ * Measured contrast: text/bg 17.5:1, muted/bg 9.1:1, redBright/bg 5.3:1, white on red 5.6:1, border-strong/bg 3.6:1.
+ * --red (#C6283D) on bg is ≈ 3.6:1: use it for fills, borders and large text only, never small text.
+ */
+:root {
+  --bg: #0b0a0d;
+  --surface: #141217;
+  --raised: #1d1920;
+  --border: #35232a;
+  --border-strong: #80606c; /* ≥3:1 against bg and raised, for input outlines */
+  --red: #c6283d;
+  --red-bright: #f04459;
+  --red-ink: #ffffff; /* text on --red fills: 5.6:1 */
+  --text: #f5f0f2;
+  --muted: #b7aeb3;
+  --success: #65c991;
+  --warn: #f0b95b;
+  --error: #ff6877;
+  --focus: #ffd1d7;
+
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', 'Segoe UI Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 72px;
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 16px;
+
+  --shadow: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 8px 24px rgb(0 0 0 / 0.35);
+  --glow: 0 0 0 1px rgb(198 40 61 / 0.35), 0 10px 30px rgb(198 40 61 / 0.12);
+
+  --content: 1200px;
+  --content-narrow: 760px;
+  --tap: 44px;
+
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 180ms;
+  --dur-slow: 240ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur: 0ms;
+    --dur-slow: 0ms;
+  }
+}
+
+:root[data-effects='off'] {
+  --dur: 0ms;
+  --dur-slow: 0ms;
+}
