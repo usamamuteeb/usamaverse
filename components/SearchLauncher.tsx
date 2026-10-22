@@ -2,10 +2,22 @@
 
 import { OPEN_SEARCH_EVENT } from './SiteHeader';
 
-export function SearchLauncher({ label = 'Search tools' }: { label?: string }) {
+/** Opens the global search. `bar` looks like a search field (used on the home page). */
+export function SearchLauncher({ label = 'Search tools', variant = 'bar' }: { label?: string; variant?: 'bar' | 'button' }) {
+  const open = () => window.dispatchEvent(new Event(OPEN_SEARCH_EVENT));
+  if (variant === 'button')
+    return (
+      <button type="button" className="btn btn-primary" onClick={open}>
+        {label}
+      </button>
+    );
   return (
-    <button type="button" className="btn btn-primary btn-lg" onClick={() => window.dispatchEvent(new Event(OPEN_SEARCH_EVENT))}>
-      {label}
+    <button type="button" className="search-bar" onClick={open} aria-haspopup="dialog">
+      <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+        <circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" strokeWidth="2" />
+        <path d="m13 13 4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+      <span>{label}</span>
     </button>
   );
 }

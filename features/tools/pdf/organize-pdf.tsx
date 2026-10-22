@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import { Button, DownloadBlobButton } from '@/components/tool-kit/actions';
 import { LiveRegion, Status } from '@/components/tool-kit/fields';
 import { formatBytes } from '@/lib/format';
-import { pdfBlob, useSinglePdf } from '@/features/tools/files/usePdf';
+import { pdfBlob, usePdfWorkspace, useSinglePdf } from '@/features/tools/files/usePdf';
+import { readInfo } from '@/features/tools/files/pdf';
 import { buildFromPlan } from './ops';
 import { PageGrid, initialPages, usePdfPreview, type GridPage } from './PageGrid';
 
 export default function OrganizePdf() {
   const { pdf, picker } = useSinglePdf();
+  const shared = usePdfWorkspace();
   const { doc, error: previewError } = usePdfPreview(pdf?.bytes ?? null);
   const [pages, setPages] = useState<GridPage[]>([]);
   const [history, setHistory] = useState<GridPage[][]>([]);
@@ -67,6 +69,13 @@ export default function OrganizePdf() {
               {busy ? 'Saving…' : 'Save organized PDF'}
             </Button>
             {out && <DownloadBlobButton blob={out} filename={`${pdf.base}-organized.pdf`} label={`Download PDF (${formatBytes(out.size)})`} />}
+            {out && shared && <Button onClick={async () => {
+              try {
+                const bytes = new Uint8Array(await out.arrayBuffer());
+                const info = await readInfo(bytes);
+                shared.setPdf({ name: `${pdf.base}-organized.pdf`, base: `${pdf.base}-organized`, bytes, info });
+              } catch (e) { setError(e instanceof Error ? e.message : String(e)); }
+            }}>Continue with this version</Button>}
           </div>
           {error && <Status tone="error">{error}</Status>}
           {out && <Status tone="success">Saved {pages.length} pages. Links, bookmarks and form fields may not survive reorganising.</Status>}

@@ -1,21 +1,11 @@
 'use client';
 
-import { Component, lazy, Suspense, useEffect, useState, type ComponentType, type LazyExoticComponent, type ReactNode } from 'react';
+import { Component, createElement, lazy, Suspense, useEffect, useState, type ComponentType, type LazyExoticComponent, type ReactNode } from 'react';
 import { loaders } from '@/lib/tools/loader-map';
 import { recordRecent } from '@/lib/local-store';
+import { ToolLoadingPortal } from './ToolLoadingPortal';
 
-const cache = new Map<string, LazyExoticComponent<ComponentType>>();
-
-function getLazy(slug: string) {
-  let c = cache.get(slug);
-  if (!c) {
-    const load = loaders[slug];
-    if (!load) return null;
-    c = lazy(load);
-    cache.set(slug, c);
-  }
-  return c;
-}
+const toolComponents = new Map<string, LazyExoticComponent<ComponentType>>(Object.entries(loaders).map(([slug, load]) => [slug, lazy(load)]));
 
 class ToolErrorBoundary extends Component<{ children: ReactNode; onRetry: () => void }, { failed: boolean }> {
   state = { failed: false };
@@ -49,37 +39,24 @@ class ToolErrorBoundary extends Component<{ children: ReactNode; onRetry: () => 
   }
 }
 
-function Loading() {
-  return (
-    <div className="tool-loading" role="status">
-      <span className="spinner" aria-hidden="true" /> Loading tool…
-    </div>
-  );
-}
-
 /** Loads only this tool's code, in the browser, after the page shell is visible. */
-export function ToolRunner({ slug }: { slug: string }) {
+export function ToolRunner({ slug, name }: { slug: string; name?: string }) {
   const [mounted, setMounted] = useState(false);
-  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     setMounted(true);
     recordRecent(slug);
   }, [slug]);
 
-  if (!mounted) return <Loading />;
-  const Tool = getLazy(slug);
+  if (!mounted) return <ToolLoadingPortal name={name} />;
+  const Tool = toolComponents.get(slug);
   if (!Tool) return <p className="status status-error">Unknown tool.</p>;
   return (
     <ToolErrorBoundary
-      key={attempt}
-      onRetry={() => {
-        cache.delete(slug);
-        setAttempt((a) => a + 1);
-      }}
+      onRetry={() => window.location.reload()}
     >
-      <Suspense fallback={<Loading />}>
-        <Tool />
+      <Suspense fallback={<ToolLoadingPortal name={name} />}>
+        {createElement(Tool)}
       </Suspense>
     </ToolErrorBoundary>
   );

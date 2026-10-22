@@ -15,6 +15,8 @@ export const categories: Category[] = [
   { slug: 'csv', name: 'Spreadsheet & CSV', description: 'View and convert CSV data.' },
   { slug: 'media', name: 'Audio & video', description: 'Media helpers.' },
   { slug: 'language', name: 'Language & everyday', description: 'Characters, numerals and everyday helpers.' },
+  { slug: 'career', name: 'CV & career', description: 'Build a CV, convert it to and from LaTeX, and prepare job applications.' },
+  { slug: 'latex', name: 'LaTeX & academic', description: 'Convert, escape and build LaTeX — tables, citations and symbols.' },
   { slug: 'misc', name: 'Miscellaneous', description: 'Handy one-off utilities.' },
 ];
 

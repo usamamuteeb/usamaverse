@@ -106,8 +106,14 @@ export function clearAllLocalData() {
   write(STORE_KEYS.favorites, []);
   write(STORE_KEYS.recent, []);
   try {
-    window.localStorage.removeItem(`${PREFIX}effects`);
-    window.localStorage.removeItem(`${PREFIX}checklist`);
+    // Everything this site stores uses the same prefix: remove it all
+    // (effects, checklist, CV draft, Resume Tailor setup and history, invoice details…).
+    const keys: string[] = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const k = window.localStorage.key(i);
+      if (k && k.startsWith(PREFIX)) keys.push(k);
+    }
+    keys.forEach((k) => window.localStorage.removeItem(k));
   } catch {
     /* ignore */
   }

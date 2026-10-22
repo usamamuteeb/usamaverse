@@ -1,0 +1,27 @@
+JOHN DOE
+Mechanical Engineer
+john.doe@example.com | +92 300 1234567 | Karachi, Pakistan | linkedin.com/in/johndoe
+
+PROFESSIONAL SUMMARY
+Mechanical engineer with 5 years in HVAC design and project delivery.
+
+WORK EXPERIENCE
+Senior HVAC Engineer          Jan 2021 – Present
+Coolair Systems, Karachi
+• Designed HVAC systems for 12 commercial buildings.
+• Cut energy use by 18% through chiller optimisation.
+
+HVAC Engineer          Jul 2018 – Dec 2020
+Breeze Tech, Lahore
+• Prepared load calculations and duct layouts.
+
+EDUCATION
+BE Mechanical Engineering          2014 – 2018
+NED University, Karachi
+
+SKILLS
+Software: AutoCAD, Revit MEP, HAP
+Soft skills: Team leadership, client communication
+
+LANGUAGES
+English, Urdu

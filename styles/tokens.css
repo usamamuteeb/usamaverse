@@ -1,50 +1,175 @@
 /*
- * Design tokens. Dark obsidian + controlled crimson.
- * Measured contrast: text/bg 17.5:1, muted/bg 9.1:1, redBright/bg 5.3:1, white on red 5.6:1, border-strong/bg 3.6:1.
- * --red (#C6283D) on bg is ≈ 3.6:1: use it for fills, borders and large text only, never small text.
+ * UsamaVerse glass theme tokens.
+ * Light is the default; dark applies when the system prefers it (unless the
+ * visitor picked light) or when <html data-theme="dark"> is set by the toggle.
+ * Text colors are chosen to keep WCAG AA contrast on the translucent panels
+ * (checked against the panel color blended over the strongest backdrop glow).
  */
 :root {
-  --bg: #0b0a0d;
-  --surface: #141217;
-  --raised: #1d1920;
-  --border: #35232a;
-  --border-strong: #80606c; /* ≥3:1 against bg and raised, for input outlines */
-  --red: #c6283d;
-  --red-bright: #f04459;
-  --red-ink: #ffffff; /* text on --red fills: 5.6:1 */
-  --text: #f5f0f2;
-  --muted: #b7aeb3;
-  --success: #65c991;
-  --warn: #f0b95b;
-  --error: #ff6877;
-  --focus: #ffd1d7;
+  /* backdrop */
+  --bg: #f3eef6;
+  --mesh-a: rgb(255 92 128 / 0.30);
+  --mesh-b: rgb(124 92 255 / 0.24);
+  --mesh-c: rgb(56 170 248 / 0.22);
+  --mesh-d: rgb(255 170 110 / 0.20);
 
-  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  /* glass surfaces */
+  --glass: rgb(255 255 255 / 0.56);
+  --glass-strong: rgb(255 255 255 / 0.84);
+  --glass-soft: rgb(255 255 255 / 0.38);
+  --glass-border: rgb(255 255 255 / 0.75);
+  --glass-edge: rgb(40 30 70 / 0.10);
+  --glass-hi: rgb(255 255 255 / 0.85);
+  --well: rgb(236 232 244 / 0.75); /* recessed areas: page previews, editor stage */
+  --hover: rgb(124 92 255 / 0.08);
+  --menu: rgb(250 248 252 / 0.94); /* dropdowns and dialogs: readable over anything */
+
+  /* text & lines */
+  --text: #1c1830;
+  --muted: #554e68;
+  --faint: #625b75;
+  --line: rgb(40 30 70 / 0.12);
+  --line-strong: #8a82a0; /* ≥3:1 for form-control outlines */
+
+  /* fields */
+  --field: rgb(255 255 255 / 0.74);
+  --field-focus: rgb(255 255 255 / 0.95);
+
+  /* accent */
+  --accent: #c2304e; /* fills (white text on it ≥ 4.5:1) */
+  --accent-hover: #a8233f;
+  --accent-text: #a3213d; /* links and highlighted text */
+  --accent-ink: #ffffff;
+  --accent-soft: rgb(194 48 78 / 0.12);
+  --accent-glow: rgb(194 48 78 / 0.28);
+  --violet-soft: rgb(124 92 255 / 0.12);
+
+  /* status */
+  --success: #13774f;
+  --warn: #8a5300;
+  --error: #b4233d;
+  --focus: #5b4bdb;
+
+  /* legacy aliases used by tool components */
+  --surface: var(--glass-strong);
+  --raised: rgb(255 255 255 / 0.6);
+  --border: var(--line);
+  --border-strong: var(--line-strong);
+  --red: var(--accent);
+  --red-bright: var(--accent-text);
+  --red-ink: var(--accent-ink);
+
+  --shadow: 0 1px 2px rgb(30 20 60 / 0.04), 0 12px 32px rgb(40 25 80 / 0.10);
+  --shadow-lg: 0 24px 70px rgb(30 20 60 / 0.22);
+  --blur: 18px;
+
+  --font-sans: 'Segoe UI Variable Text', 'Segoe UI', Inter, system-ui, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
   --font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', 'Segoe UI Mono', Menlo, Consolas, 'Liberation Mono', monospace;
 
+  /* compact spacing scale */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 48px;
-  --space-8: 72px;
+  --space-5: 20px;
+  --space-6: 28px;
+  --space-7: 40px;
+  --space-8: 56px;
 
-  --radius-sm: 6px;
-  --radius: 10px;
-  --radius-lg: 16px;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
 
-  --shadow: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 8px 24px rgb(0 0 0 / 0.35);
-  --glow: 0 0 0 1px rgb(198 40 61 / 0.35), 0 10px 30px rgb(198 40 61 / 0.12);
-
-  --content: 1200px;
+  --content: 1440px;
   --content-narrow: 760px;
-  --tap: 44px;
+  --header-h: 56px;
+  --tap: 38px;
 
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --dur: 180ms;
-  --dur-slow: 240ms;
+  --dur: 160ms;
+  --dur-slow: 260ms;
+  color-scheme: light;
+}
+
+/* Dark glass: obsidian with crimson and violet glows. */
+:root[data-theme='dark'] {
+  --bg: #0c0a12;
+  --mesh-a: rgb(198 40 61 / 0.42);
+  --mesh-b: rgb(110 60 200 / 0.32);
+  --mesh-c: rgb(40 90 200 / 0.22);
+  --mesh-d: rgb(240 68 89 / 0.14);
+  --glass: rgb(26 20 34 / 0.55);
+  --glass-strong: rgb(22 17 30 / 0.86);
+  --glass-soft: rgb(255 255 255 / 0.045);
+  --glass-border: rgb(255 255 255 / 0.11);
+  --glass-edge: rgb(0 0 0 / 0.45);
+  --glass-hi: rgb(255 255 255 / 0.07);
+  --well: rgb(6 5 10 / 0.5);
+  --hover: rgb(255 255 255 / 0.06);
+  --menu: rgb(20 15 27 / 0.95);
+  --text: #f4eef4;
+  --muted: #bdb1bf;
+  --faint: #a497a8;
+  --line: rgb(255 255 255 / 0.11);
+  --line-strong: #8a7a90;
+  --field: rgb(8 6 12 / 0.55);
+  --field-focus: rgb(8 6 12 / 0.75);
+  --accent: #c6283d;
+  --accent-hover: #d93a50;
+  --accent-text: #ff8a9b;
+  --accent-ink: #ffffff;
+  --accent-soft: rgb(240 68 89 / 0.16);
+  --accent-glow: rgb(240 68 89 / 0.35);
+  --violet-soft: rgb(150 110 255 / 0.16);
+  --success: #6fd3a0;
+  --warn: #f2c06a;
+  --error: #ff7f8e;
+  --focus: #b7a8ff;
+  --raised: rgb(255 255 255 / 0.06);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 14px 36px rgb(0 0 0 / 0.35);
+  --shadow-lg: 0 30px 90px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0c0a12;
+    --mesh-a: rgb(198 40 61 / 0.42);
+    --mesh-b: rgb(110 60 200 / 0.32);
+    --mesh-c: rgb(40 90 200 / 0.22);
+    --mesh-d: rgb(240 68 89 / 0.14);
+    --glass: rgb(26 20 34 / 0.55);
+    --glass-strong: rgb(22 17 30 / 0.86);
+    --glass-soft: rgb(255 255 255 / 0.045);
+    --glass-border: rgb(255 255 255 / 0.11);
+    --glass-edge: rgb(0 0 0 / 0.45);
+    --glass-hi: rgb(255 255 255 / 0.07);
+    --well: rgb(6 5 10 / 0.5);
+    --hover: rgb(255 255 255 / 0.06);
+    --menu: rgb(20 15 27 / 0.95);
+    --text: #f4eef4;
+    --muted: #bdb1bf;
+    --faint: #a497a8;
+    --line: rgb(255 255 255 / 0.11);
+    --line-strong: #8a7a90;
+    --field: rgb(8 6 12 / 0.55);
+    --field-focus: rgb(8 6 12 / 0.75);
+    --accent: #c6283d;
+    --accent-hover: #d93a50;
+    --accent-text: #ff8a9b;
+    --accent-ink: #ffffff;
+    --accent-soft: rgb(240 68 89 / 0.16);
+    --accent-glow: rgb(240 68 89 / 0.35);
+    --violet-soft: rgb(150 110 255 / 0.16);
+    --success: #6fd3a0;
+    --warn: #f2c06a;
+    --error: #ff7f8e;
+    --focus: #b7a8ff;
+    --raised: rgb(255 255 255 / 0.06);
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 14px 36px rgb(0 0 0 / 0.35);
+    --shadow-lg: 0 30px 90px rgb(0 0 0 / 0.6);
+    color-scheme: dark;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -53,7 +178,6 @@
     --dur-slow: 0ms;
   }
 }
-
 :root[data-effects='off'] {
   --dur: 0ms;
   --dur-slow: 0ms;

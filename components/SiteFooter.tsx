@@ -7,10 +7,11 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="container footer-inner">
         <p className="muted">
-          {siteConfig.name} — free tools, no account. Tools marked “runs in your browser” never upload what you enter.
+          <strong>{siteConfig.name}</strong> · free tools, no account, processed on your device.
         </p>
         <nav aria-label="Footer" className="footer-nav">
-          <Link href="/tools">All tools</Link>
+          <Link href="/tools">Workspaces</Link>
+          <Link href="/apps">App</Link>
           <Link href="/recent">Recent</Link>
           <Link href="/privacy">Privacy</Link>
           <Link href="/help">Help</Link>

@@ -4,6 +4,7 @@
  * outside the root, quoted attributes, legal-looking names. It does not process
  * DTDs or validate against schemas. Original tag text (attributes) is preserved.
  */
+export type XmlNode = Node;
 type Node =
   | { kind: 'element'; name: string; open: string; selfClosing: boolean; children: Node[] }
   | { kind: 'text'; text: string }

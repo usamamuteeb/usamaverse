@@ -6,6 +6,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { categoriesWithCounts, publicSearchItems, publicTools } from '@/lib/tools/public';
 import { buildIndex, search } from '@/lib/tools/search';
 import { ToolGrid } from './ToolCard';
+import { WorkspaceGrid } from './WorkspaceCard';
+import { workspaces } from '@/lib/tools/workspaces';
+import { categoryEmoji } from '@/lib/ui-icons';
 
 const PAGE = 24;
 const index = buildIndex(publicSearchItems);
@@ -44,6 +47,8 @@ export function ToolsBrowser() {
     const list = urlQ.trim() ? search(index, urlQ).map((s) => bySlug.get(s.slug)!) : publicTools;
     return category ? list.filter((t) => t.category === category) : list;
   }, [urlQ, category]);
+  const visibleWorkspaces = category ? workspaces.filter((item) => item.category === category) : workspaces;
+  const browsingWorkspaces = !urlQ.trim();
 
   const catHref = (slug: string) => {
     const next = new URLSearchParams(params.toString());
@@ -59,13 +64,13 @@ export function ToolsBrowser() {
     <ul className="cat-list" role="list">
       <li>
         <Link href={catHref('')} aria-current={!category ? 'page' : undefined} onClick={onPick} scroll={false}>
-          All tools <span className="count">{publicTools.length}</span>
+          <span><span aria-hidden="true">✨</span> All workspaces</span> <span className="count">{workspaces.length}</span>
         </Link>
       </li>
       {cats.map((c) => (
         <li key={c.slug}>
           <Link href={catHref(c.slug)} aria-current={category === c.slug ? 'page' : undefined} onClick={onPick} scroll={false}>
-            {c.name} <span className="count">{c.count}</span>
+            <span><span aria-hidden="true">{categoryEmoji[c.slug]}</span> {c.name}</span> <span className="count">{workspaces.filter((item) => item.category === c.slug).length}</span>
           </Link>
         </li>
       ))}
@@ -97,9 +102,9 @@ export function ToolsBrowser() {
           </button>
         </div>
         <p className="summary" role="status">
-          {results.length === 0 ? 'No tools found.' : `${results.length} tool${results.length === 1 ? '' : 's'}${activeCat ? ` in ${activeCat.name}` : ''}${urlQ.trim() ? ` matching “${urlQ.trim()}”` : ''}.`}
+          {browsingWorkspaces ? `${visibleWorkspaces.length} focused workspaces${activeCat ? ` in ${activeCat.name}` : ''}. Choose one, then switch between its actions.` : results.length === 0 ? 'No tools found.' : `${results.length} action${results.length === 1 ? '' : 's'}${activeCat ? ` in ${activeCat.name}` : ''} matching “${urlQ.trim()}”.`}
         </p>
-        {results.length === 0 ? (
+        {browsingWorkspaces ? <WorkspaceGrid items={visibleWorkspaces} /> : results.length === 0 ? (
           <div className="empty-block">
             <p>Try a shorter or different word, or browse everything.</p>
             <div className="actions">

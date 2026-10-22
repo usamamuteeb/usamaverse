@@ -6,6 +6,7 @@ import { getPublicTool } from '@/lib/tools/public';
 import type { ToolMeta } from '@/lib/tools/types';
 import { ToolGrid } from './ToolCard';
 import { useState } from 'react';
+import { clearHistory, clearTypingSettings } from '@/features/apps/typing/storage';
 
 function resolve(slugs: string[]): ToolMeta[] {
   return slugs.map((s) => getPublicTool(s)).filter((t): t is ToolMeta => Boolean(t));
@@ -54,22 +55,29 @@ export function RecentList() {
 }
 
 export function ClearLocalDataButton() {
-  const [done, setDone] = useState(false);
+  const [message, setMessage] = useState('');
   return (
     <>
       <button
         type="button"
         className="btn btn-secondary"
-        onClick={() => {
+        onClick={async () => {
+          if (!window.confirm('Clear all site data in this browser — favorites, CV and Resume Tailor drafts and history, typing history and settings? This cannot be undone.')) return;
           clearAllLocalData();
+          clearTypingSettings();
           delete document.documentElement.dataset.effects;
-          setDone(true);
+          try {
+            await clearHistory();
+            setMessage('Cleared favorites, recent tools, saved drafts (CV, Resume Tailor, invoice), settings and local typing history.');
+          } catch {
+            setMessage('Cleared site preferences, but local typing history could not be cleared here. Open Typing Studio → Local history to try again.');
+          }
         }}
       >
         Clear all data this site saved in this browser
       </button>
       <span role="status" className="inline-note">
-        {done ? 'Cleared favorites, recent tools, the checklist and the effects setting.' : ''}
+        {message}
       </span>
     </>
   );

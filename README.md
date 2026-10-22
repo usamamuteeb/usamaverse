@@ -13,7 +13,7 @@ npm install
 npm run dev          # http://localhost:3000
 ```
 
-`npm install` also copies the pdf.js worker and its data files into `public/pdfjs/` (see `scripts/copy-pdfjs-assets.mjs`). If PDF previews ever fail after updating packages, run `npm install` again.
+`npm install` and `npm run build` copy local pdf.js, PDFium, English OCR, and FFmpeg WebAssembly assets into `public/` (see `scripts/copy-pdfjs-assets.mjs`). Vercel runs the same build step.
 
 Before you push or deploy:
 
@@ -24,45 +24,50 @@ npm run test:e2e     # optional: Playwright browser tests (first run: npx playwr
 
 ## What’s included
 
-- **172 working tools** across 15 categories. All of them run in the browser; nothing you enter or open is uploaded.
-- **40 tools still in the backlog** (`lib/tools/registry.planned.ts`) — heavy media editing, Office/PDF conversions that need a server engine, PDF passwords, OCR and a few smaller items. They are never listed, searched, counted or routed (`/tools/<planned-slug>` is a 404).
-- Routes: `/`, `/tools`, `/tools/[slug]`, `/category/[slug]`, `/favorites`, `/recent`, `/privacy`, `/help`, `/feedback`, plus `sitemap.xml` and `robots.txt`.
+- **51 focused workspaces** organize 229 working actions across 17 categories. Each action has a direct `/tools/[slug]` URL. File processing runs in the browser; inputs are not uploaded.
+- The de-duplicated original roadmap has no unimplemented entries (`lib/tools/registry.planned.ts`). This count describes the shipped actions, not feature parity with desktop editing suites.
+- Routes: `/`, `/tools`, `/workspaces/[slug]`, `/tools/[slug]`, `/category/[slug]`, `/favorites`, `/recent`, `/privacy`, `/help`, `/feedback`, plus `sitemap.xml` and `robots.txt`.
 - Instant local search (aliases, synonyms, accents, punctuation), `Ctrl/⌘ + K` outside text fields, arrow keys / Enter / Escape, focus restored.
-- `/tools` filters live in the URL (`?q=&category=`), with “Show more” pagination and a mobile category drawer.
+- `/tools` shows task-focused workspaces by default; searches still find individual actions. Filters live in the URL (`?q=&category=`).
 - Favorites, recent tools, the visual-effects switch and the Checklist tool use browser-local storage (versioned `usamaverse:v1:*` keys), clearable from the Privacy page.
-- Dark obsidian / crimson theme, restrained motion, `prefers-reduced-motion` respected.
+- Compact light glass theme with an optional dark mode, restrained motion, and `prefers-reduced-motion` support. The typing app is branded **UsamaType**.
+
+PDF workspaces keep the selected PDF in memory as you switch actions. The editor supports direct page placement, selection, movement, text revision, shape/image resizing, deletion, undo and redo. It edits existing text objects in the PDF content stream with PDFium, preserving other page text and form fields in tested documents. Text size and color can be changed. Some PDFs store text as images or paths, and complex fonts or rotations may still limit editing. After saving, **Continue with this version** makes the edited PDF the input for the next PDF action. White-out overlays only cover content visually; use Redact PDF for sensitive information. See [PDF coverage and gaps](docs/pdf-coverage.md).
 
 ### Implemented tools
 
 | Category | Tools |
 |---|---|
-| Text (14) | word & character counter, line counter, case converter, whitespace cleaner, duplicate line remover, line sorter, text diff, find & replace, slug generator, reading time, lorem ipsum, text reverser, remove blank lines, text to columns |
-| Developer (17) | JSON formatter, JSON ↔ CSV, XML formatter, HTML formatter, CSS formatter/minifier, SQL formatter, HTML entities, URL encode/decode, Base64 text, Base64 file, JWT decoder, regex tester, Markdown preview, Unix timestamp, UUID, cron explainer, diff/patch viewer |
-| Generators & security (11) | password, random number, random string, PIN, SHA hash, HMAC, CRC-32, bcrypt cost explainer, password strength checker, QR code, barcode (Code 128 / EAN-13 / UPC-A) |
-| Image (15) | resize, compress, crop, rotate/flip, PNG → JPEG, JPEG → PNG, to WebP, from WebP, fix EXIF orientation, metadata viewer, favicon generator, image ↔ Base64, color picker from image, social media sizes |
-| Files (4) | file type inspector, text file merger, file hash, ZIP creator |
-| PDF (22) | merge, split (ranges / every N / each page), organize (thumbnails: reorder, rotate, delete), remove pages, extract pages, rotate, reorder, page numbers, watermark (text or image), crop, compress (lossless or strong), repair, PDF → JPG/PNG, PDF → text/Markdown, images → PDF, scan → PDF (phone camera), fill forms, sign (visual), redact (flattened, verified), edit (text, highlight, boxes, white-out, pen, images), compare (visual or text), metadata |
-| Math (14) | calculator, scientific calculator, fractions, percentage, average, median/mode/statistics, tip, discount, sales tax, loan, simple/compound interest, GPA, number bases, random picker |
-| Units (17) | length, mass, temperature, area, volume, speed, time, data size, pressure, energy, power, force, angle, frequency, fuel economy, typography, cooking measures |
-| Dates & time (14) | date difference, add/subtract, age, stopwatch, countdown timer, countdown to date, time zone converter (DST-aware), world clock, meeting planner, ISO 8601 formatter, week number, business days, weekday finder, duration calculator |
-| Color & design (11) | color converter, color picker (eyedropper), contrast checker, palette generator, CSS gradient, box shadow, border radius, type scale, clamp() calculator, aspect ratio, PPI |
-| Web (12) | URL parser, query string builder, UTM builder, URL cleaner, URL extractor, meta/Open Graph tags, robots.txt, sitemap.xml, user-agent parser, HTTP status codes, MIME lookup, data URI encoder/decoder |
-| CSV (8) | viewer, CSV → Markdown, delimiter detector, column selector, duplicate finder, sorter, filter, TSV ↔ CSV |
-| Audio & video (1) | file size / bitrate estimator |
-| Language (9) | character frequency, Roman numerals, Unicode inspector, Morse code (with audio), NATO alphabet, number to words, text ↔ binary/hex, Braille (Grade 1), checklist |
-| Misc (3) | Markdown table generator, HTML table generator, invoice number generator |
+| Text (14) | Count, transform, compare, clean and generate text. |
+| Developer (19) | JSON, YAML, XML, HTML, CSS, JavaScript, SQL, Base64, JWT, regex, Markdown and other developer utilities. |
+| Generators & security (12) | Passwords, audited-list passphrases, secure random values, hashes, QR codes and barcodes. |
+| Image (17) | Resize, crop, compress, convert, inspect, create placeholders and clean SVGs. |
+| Files (5) | Inspect and hash files, join text, create and extract ZIP archives. |
+| PDF (35) | Direct page editing, forms, signing, redaction, OCR, page operations, Office conversions, protection and reusable workflows. |
+| Math (14) | Calculators for everyday, finance, fractions, statistics, grades and bases. |
+| Units (18) | Physical and digital conversions plus an adidas adult shoe-size chart. |
+| Dates & time (14) | Date arithmetic, timers, world time, meeting planning and calendars. |
+| Color & design (12) | Colors, contrast, palettes, CSS design and vision simulation. |
+| Web (13) | URLs, page analysis, SEO and web reference tools. |
+| CSV (9) | View, sort, filter and transform tables, plus a formula helper. |
+| Audio & video (12) | Inspect, trim, adjust, join, extract, mute and convert media; capture video frames and inspect GIFs. |
+| Language (11) | Unicode, emoji, keyboard layouts, Morse, NATO, Braille and number text. |
+| Misc (8) | Tables, invoices, printable labels, a screen ruler and QR/barcode image readers. |
+| Career (8) | Build CVs, draft cover letters and tailor applications. |
+| LaTeX (8) | Convert, format and build LaTeX, tables and BibTeX. |
 
 ### PDF tools: how they work
 
-- **Engines:** [pdf-lib](https://pdf-lib.js.org) (MIT) writes PDFs; [pdf.js](https://mozilla.github.io/pdf.js/) (Apache-2.0, legacy build for wider browser support) renders previews and reads text. Both load only on PDF tool pages.
-- **Local only:** files are processed in the browser and never uploaded. The pdf.js worker is served from this site (`/pdfjs/`), not a CDN.
+- **Engines:** [pdf-lib](https://pdf-lib.js.org) (MIT) writes and organizes PDFs; [pdf.js](https://mozilla.github.io/pdf.js/) (Apache-2.0) renders previews and reads text; [EmbedPDF PDFium](https://www.embedpdf.com/docs/pdfium/introduction) (MIT wrapper with Apache-2.0 PDFium) edits existing text, handles passwords and extracts image objects; [Tesseract.js](https://github.com/naptha/tesseract.js) (Apache-2.0) runs English OCR.
+- **Local only:** files are processed in the browser and never uploaded. Engine assets and the English OCR model are served from this site, not a third-party CDN.
 - **Rotated and cropped pages:** stamps, crops, signatures and edits are placed in the page as you see it (see `features/tools/pdf/ops.ts`).
-- **Honest limits:** built-in PDF fonts support Latin text only; password-protected PDFs are refused; crop and white-out only *hide* content, so use Redact to remove it. Redact turns marked pages into images with the boxes burned in, then checks that the searched text is gone. Visual signatures are not certificate signatures. Compress tells you when it can’t make a file smaller.
-- **Not built (needs a server engine or a product decision):** Word/PowerPoint/Excel/HTML ↔ PDF, PDF/A, protect/unlock with passwords, OCR, and a workflow builder. AI summarise/translate tools are excluded by design.
+- **Honest limits:** added text uses built-in Latin fonts; editing existing text depends on how its font and glyphs are stored. Crop and white-out only *hide* content, so use Redact to remove it. Redact turns marked pages into images with the boxes burned in, then checks that the searched text is gone. Visual signatures are not certificate signatures. OCR is English-only, depends on scan quality and positions text approximately. Compress tells you when it can’t make a file smaller.
+- **Conversion fidelity:** DOCX/PPTX/local HTML → PDF is visually rendered; DOCX and XLSX extraction from PDF is editable but approximate; PDF → PPTX uses page images. PDF/A-2b rasterizes pages and passed a veraPDF sample validation. See [PDF coverage and gaps](docs/pdf-coverage.md).
+- **Workflows:** The builder chains page rotation/removal, numbering, text watermarking, metadata and lossless optimization, and stores or exports a settings-only recipe. It processes one selected PDF at a time.
 
-### Still deferred (and why)
+### Capability limits
 
-Video/audio editing (trim, convert, join…) needs a large WebAssembly media library; QR/barcode **readers**, PDF rendering/text extraction/compression and ZIP extraction need heavier parsers with security review; YAML validation, JavaScript formatting, emoji search, passphrases (needs a vetted word list), shoe sizes, color-blindness simulation, keyboard layouts, invoice templates, labels and a screen ruler are smaller items still to do.
+Video trimming, muting and conversion use a locally served 32 MB FFmpeg WebAssembly engine and accept inputs up to 100 MB with a 10-minute processing limit. Media conversion exports MP4, WebM, GIF, MP3 or WAV. PDF-to-Office reconstruction is editable but approximate, especially for complex layouts. Local AI translation and summarization are not included because this site has no model service.
 
 ## Project layout
 
@@ -87,13 +92,13 @@ e2e/                         Playwright browser tests
 
 1. Write pure logic in `features/tools/<category>/logic.ts` and unit-test it in `tests/`.
 2. Create `features/tools/<category>/<slug>.tsx` (default export, `'use client'`). Most tools are a few lines using `TransformTool`, `FormTool`, `GeneratorTool`, `StatsTool` or `UnitConverter`.
-3. Move the entry from `registry.planned.ts` to `registry.implemented.ts` (description, aliases, tags, related, limits).
+3. Add metadata to `registry.implemented.ts` or one of its batch modules (description, aliases, tags, related, limits).
 4. Add one line to `lib/tools/loader-map.ts`.
 5. `npm test` — it fails if slugs duplicate, categories are invalid, related links are broken, or the registry and loader map disagree.
 
 ## Dependencies
 
-Only `next`, `react`, `react-dom` and **`pdf-lib`** (MIT, used only on PDF tool pages and loaded on demand). QR codes, barcodes, ZIP, CRC/HMAC, EXIF, CSV, Markdown, formatters and time-zone handling are implemented in this repo.
+Runtime dependencies include `next`, `react`, `react-dom`, `pdf-lib`, `pdfjs-dist`, `@embedpdf/pdfium`, `tesseract.js`, `@zxing/browser`, `@scure/bip39`, `@emoji-mart/data` and `@ffmpeg/ffmpeg`/`@ffmpeg/core`. Heavy engines load only when their actions run. The FFmpeg core package is GPL-2.0-or-later; review its license when distributing a modified build. All codec assets are served from this site.
 
 ## Privacy & security model
 
@@ -106,11 +111,10 @@ Only `next`, `react`, `react-dom` and **`pdf-lib`** (MIT, used only on PDF tool 
 
 All visuals are original inline SVG (`components/HeroArt.tsx`, `components/Brand.tsx`, `app/icon.svg`): a crimson moon, mist and generic crows inspired by a dark “crimson anime” mood. No character art, logos or emblems from any franchise are included or hotlinked. To use licensed art, replace `HeroArt` and keep it decorative (`aria-hidden`). There is no affiliation with any anime franchise.
 
-## Deploying to Vercel (later — not done)
+## Deploying to Vercel
 
-1. Push this folder to a Git repository.
-2. In Vercel, “Add New Project” → import the repo. Framework is auto-detected as Next.js; no environment variables are required.
-3. Optional: set `NEXT_PUBLIC_SITE_URL` (e.g. `https://your-domain`) for canonical URLs and the sitemap.
-4. Every page is static or pre-rendered; there are no server functions, secrets, auth or database.
+1. Push this folder to the connected Git repository. Vercel will rebuild the Next.js project.
+2. Optional: set `NEXT_PUBLIC_SITE_URL` (e.g. `https://your-domain`) for canonical URLs and the sitemap.
+3. Every page is static or pre-rendered; there are no server functions, secrets, auth or database. The build copies the FFmpeg, PDF, and OCR assets into `public/` for same-origin loading.
 
 Check Vercel’s current plan limits when you deploy; nothing here assumes unlimited usage.

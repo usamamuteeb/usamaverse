@@ -45,7 +45,7 @@ export default function CsvDelimiterDetector() {
             </tbody>
           </table>
         )}
-        <p className="field-hint">Quoted values are respected, so commas inside "quotes" don’t count. Semicolons are common where the comma is the decimal separator.</p>
+        <p className="field-hint">Quoted values are respected, so commas inside &quot;quotes&quot; don’t count. Semicolons are common where the comma is the decimal separator.</p>
       </div>
     </div>
   );

@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { FavoriteButton } from '@/components/FavoriteButton';
-import { ToolGrid } from '@/components/ToolCard';
 import { ToolRunner } from '@/components/ToolRunner';
-import { categoryName, getPublicTool, publicTools, relatedTools } from '@/lib/tools/public';
+import { ToolNotes, ToolTitle } from '@/components/ToolTitle';
+import { WorkspaceNav } from '@/components/WorkspaceNav';
+import { getPublicTool, publicTools, relatedTools } from '@/lib/tools/public';
+import { workspaceForTool } from '@/lib/tools/workspaces';
 
 type Params = { slug: string };
 
@@ -26,70 +27,46 @@ export default async function ToolPage({ params }: { params: Promise<Params> }) 
   const { slug } = await params;
   const tool = getPublicTool(slug);
   if (!tool) notFound();
+  const group = workspaceForTool(tool.slug);
   const related = relatedTools(tool);
 
   return (
-    <div className="container page">
-      <Breadcrumbs items={[{ href: '/', label: 'Home' }, { href: `/category/${tool.category}`, label: categoryName(tool.category) }, { label: tool.name }]} />
-      <header className="tool-header">
-        <div>
-          <h1 className="h1">{tool.name}</h1>
-          <p className="lead">{tool.description}</p>
+    <div className="container page shell-page">
+      <div className="shell">
+        <aside className="shell-side">
+          <WorkspaceNav category={tool.category} workspace={group?.slug} active={tool.slug} mode="tool" />
+        </aside>
+        <div className="shell-main">
+          <ToolTitle
+            tool={tool}
+            workspace={group ? { slug: group.slug, name: group.name } : undefined}
+            actions={
+              <>
+                <FavoriteButton slug={tool.slug} name={tool.name} />
+                {group && (
+                  <Link href={`/workspaces/${group.slug}?tool=${tool.slug}`} className="btn btn-ghost btn-sm">
+                    Open in workspace ↗
+                  </Link>
+                )}
+              </>
+            }
+          />
+          <section className="workspace glass" aria-label={`${tool.name} workspace`}>
+            <ToolRunner slug={tool.slug} name={tool.name} />
+          </section>
+          <ToolNotes tool={tool} />
+          {related.length > 0 && (
+            <nav className="related-row" aria-label="Related tools">
+              <span className="related-label">Related:</span>
+              {related.map((r) => (
+                <Link key={r.slug} href={`/tools/${r.slug}`} className="chip">
+                  {r.name}
+                </Link>
+              ))}
+            </nav>
+          )}
         </div>
-        <FavoriteButton slug={tool.slug} name={tool.name} />
-      </header>
-      <p className="privacy-note">
-        <span className="badge" aria-hidden="true">
-          ●
-        </span>{' '}
-        {tool.processing === 'browser-local' ? (
-          <>
-            <strong>Runs in your browser.</strong> What you enter is processed on this device and is not uploaded.
-          </>
-        ) : (
-          <>
-            <strong>Uses a server.</strong> Your input is sent to process it.
-          </>
-        )}
-      </p>
-
-      <section className="workspace" aria-label={`${tool.name} workspace`}>
-        <ToolRunner slug={tool.slug} />
-      </section>
-
-      {Boolean(tool.howTo?.length || tool.limits?.length) && (
-        <section className="tool-notes" aria-labelledby="notes-h">
-          <h2 id="notes-h" className="h2">
-            Good to know
-          </h2>
-          {tool.howTo && (
-            <ol>
-              {tool.howTo.map((s) => (
-                <li key={s}>{s}</li>
-              ))}
-            </ol>
-          )}
-          {tool.limits && (
-            <ul>
-              {tool.limits.map((s) => (
-                <li key={s}>{s}</li>
-              ))}
-            </ul>
-          )}
-        </section>
-      )}
-
-      {related.length > 0 && (
-        <section aria-labelledby="related-h" className="section">
-          <h2 id="related-h" className="h2">
-            Related tools
-          </h2>
-          <ToolGrid tools={related} />
-          <p>
-            <Link href={`/category/${tool.category}`}>More {categoryName(tool.category).toLowerCase()} tools →</Link>
-          </p>
-        </section>
-      )}
+      </div>
     </div>
   );
 }

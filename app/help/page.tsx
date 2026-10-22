@@ -32,6 +32,19 @@ export default function HelpPage() {
         <li>Errors never clear your input, so you can fix it and try again.</li>
       </ul>
 
+      <h2 className="h2">Using an app</h2>
+      <p>The <Link href="/apps">App tab</Link> opens larger experiences. UsamaType includes practice modes, results and history kept only in this browser. Its “How it works” panel explains the scoring rule.</p>
+      <p>
+        <Link href="/apps/resume-tailor">Resume Tailor</Link> keeps your LaTeX resume, bullet bank, skills and certifications as defaults in Setup; each run needs only a job description. It works by clear rules — no AI model — and lists every change it made. Compile the tailored .tex (for example on Overleaf) for your template’s exact look, or download a PDF directly.
+      </p>
+
+      <h2 className="h2">CV and LaTeX tools</h2>
+      <ul>
+        <li>The CV Builder, CV to LaTeX and LaTeX CV Converter share one CV format, so you can move a CV between them with “Send to CV Builder”.</li>
+        <li>Imports from PDF and Word are best effort — headings such as Experience, Education and Skills, bullet points and date ranges help the most.</li>
+        <li>Direct PDF downloads use the standard PDF fonts (Western European letters). For other scripts use “Print / Save as PDF”.</li>
+      </ul>
+
       <h2 className="h2">Accessibility</h2>
       <p>
         Everything works with a keyboard. If you prefer less motion, your system’s “reduce motion” setting is respected, and you can also switch visual effects off in the footer.

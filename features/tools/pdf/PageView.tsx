@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { canvasToBlob, releaseCanvas, renderPage } from './pdfjs';
 
@@ -33,6 +33,7 @@ export function PageView({
   onMetrics,
   label,
   cursor = 'crosshair',
+  style,
 }: {
   doc: PDFDocumentProxy;
   pageNumber: number;
@@ -43,6 +44,7 @@ export function PageView({
   onMetrics?: (m: PageMetrics) => void;
   label: string;
   cursor?: string;
+  style?: CSSProperties;
 }) {
   const [url, setUrl] = useState<string | null>(null);
   const [m, setM] = useState<PageMetrics | null>(null);
@@ -88,7 +90,7 @@ export function PageView({
     fn(pointerToPt(e, svgRef.current, m), m);
   };
   return (
-    <div className="page-view" style={{ aspectRatio: `${m.widthPt} / ${m.heightPt}` }}>
+    <div className="page-view" style={{ aspectRatio: `${m.widthPt} / ${m.heightPt}`, ...style }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={url} alt={label} draggable={false} />
       <svg
@@ -99,7 +101,7 @@ export function PageView({
         onPointerDown={(e) => {
           if (!onPointerDown) return;
           dragging.current = true;
-          (e.target as Element).setPointerCapture?.(e.pointerId);
+          svgRef.current?.setPointerCapture?.(e.pointerId);
           handler(onPointerDown)(e);
         }}
         onPointerMove={(e) => dragging.current && handler(onPointerMove)(e)}
@@ -108,6 +110,7 @@ export function PageView({
           dragging.current = false;
           handler(onPointerUp)(e);
         }}
+        onPointerCancel={() => { dragging.current = false; }}
         aria-hidden="true"
       >
         {overlay?.(m)}

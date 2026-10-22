@@ -40,8 +40,8 @@ export default function SearchDialog({ open, onClose }: { open: boolean; onClose
   }, [q, recent]);
 
   const go = (slug: string) => {
-    onClose();
     router.push(`/tools/${slug}`);
+    onClose();
   };
 
   const onKeyDown = (e: KeyboardEvent) => {

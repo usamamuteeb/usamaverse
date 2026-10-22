@@ -2,10 +2,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { ToolGrid } from '@/components/ToolCard';
+import { WorkspaceGrid } from '@/components/WorkspaceCard';
 import { getCategory } from '@/lib/tools/categories';
 import { categoriesWithCounts, toolsInCategory } from '@/lib/tools/public';
 import type { CategorySlug } from '@/lib/tools/types';
+import { workspacesInCategory } from '@/lib/tools/workspaces';
+import { categoryEmoji } from '@/lib/ui-icons';
 
 type Params = { slug: string };
 
@@ -30,21 +32,25 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
   const others = categoriesWithCounts().filter((c) => c.slug !== cat.slug);
   return (
     <div className="container page">
-      <Breadcrumbs items={[{ href: '/', label: 'Home' }, { href: '/tools', label: 'Tools' }, { label: cat.name }]} />
-      <h1 className="h1">{cat.name} tools</h1>
-      <p className="lead">
-        {cat.description} {tools.length} tool{tools.length === 1 ? '' : 's'}.
-      </p>
-      <ToolGrid tools={tools} />
-      <section className="section" aria-labelledby="other-cats">
+      <header className="page-bar">
+        <Breadcrumbs items={[{ href: '/', label: 'Home' }, { href: '/tools', label: 'Workspaces' }, { label: cat.name }]} />
+        <h1 className="h1">
+          <span aria-hidden="true">{categoryEmoji[cat.slug as CategorySlug]}</span> {cat.name}
+        </h1>
+        <p className="muted">
+          {cat.description} {tools.length} tools in {workspacesInCategory(cat.slug).length} workspaces.
+        </p>
+      </header>
+      <WorkspaceGrid items={workspacesInCategory(cat.slug)} />
+      <section className="home-section" aria-labelledby="other-cats">
         <h2 id="other-cats" className="h3">
           Other categories
         </h2>
-        <ul className="pill-list" role="list">
+        <ul className="cat-chips" role="list">
           {others.map((c) => (
             <li key={c.slug}>
-              <Link href={`/category/${c.slug}`}>
-                {c.name} <span className="count">{c.count}</span>
+              <Link href={`/category/${c.slug}`} className="chip">
+                <span aria-hidden="true">{categoryEmoji[c.slug]}</span> {c.name} <span className="count">{c.count}</span>
               </Link>
             </li>
           ))}

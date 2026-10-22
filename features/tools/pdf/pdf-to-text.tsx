@@ -79,7 +79,7 @@ export default function PdfToText() {
         )}
       </div>
       <div className="tool-col">
-        <Status tone="info">Best effort: text is put in reading order from its position on the page. Columns, tables and footnotes may need tidying. Scanned pages have no text to extract (that needs OCR, which this site does not do).</Status>
+        <Status tone="info">Best effort: text is put in reading order from its position on the page. Columns, tables and footnotes may need tidying. For scanned pages, run OCR PDF first.</Status>
         {error && <Status tone="error">{error}</Status>}
         {empty.length > 0 && <Status tone="warn">No text layer on page{empty.length === 1 ? '' : 's'} {empty.slice(0, 20).join(', ')}{empty.length > 20 ? '…' : ''} — probably scanned images.</Status>}
         <OutputPanel label={format === 'markdown' ? 'Markdown' : 'Text'} value={output} filename={`${pdf?.base ?? 'document'}.${format === 'markdown' ? 'md' : 'txt'}`} mime={format === 'markdown' ? 'text/markdown' : 'text/plain'} rows={18} mono={false} />

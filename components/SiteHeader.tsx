@@ -1,8 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { Wordmark } from './Brand';
+import { BrowseMenu } from './BrowseMenu';
+import { ThemeToggle } from './ThemeToggle';
 
 const SearchDialog = lazy(() => import('./SearchDialog'));
 
@@ -16,6 +19,7 @@ function isEditable(el: EventTarget | null): boolean {
 export const OPEN_SEARCH_EVENT = 'usamaverse:open-search';
 
 export function SiteHeader() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [requested, setRequested] = useState(false);
   const [isMac, setIsMac] = useState(false);
@@ -61,12 +65,11 @@ export function SiteHeader() {
           <Wordmark />
         </Link>
         <nav aria-label="Main" className="main-nav">
-          <Link href="/tools">Tools</Link>
-          <Link href="/favorites" className="hide-sm">
+          <BrowseMenu />
+          <Link href="/tools" className="hide-sm" aria-current={pathname === '/tools' ? 'page' : undefined}>Workspaces</Link>
+          <Link href="/apps" aria-current={pathname === '/apps' || pathname.startsWith('/apps/') ? 'page' : undefined}>App</Link>
+          <Link href="/favorites" className="hide-md" aria-current={pathname === '/favorites' ? 'page' : undefined}>
             Favorites
-          </Link>
-          <Link href="/help" className="hide-sm">
-            Help
           </Link>
         </nav>
         <button ref={triggerRef} type="button" className="search-trigger" onClick={openSearch} aria-haspopup="dialog" aria-label="Search tools" aria-keyshortcuts="Control+K Meta+K">
@@ -77,6 +80,7 @@ export function SiteHeader() {
           <span className="search-trigger-text">Search tools</span>
           <kbd className="hide-sm">{isMac ? '⌘' : 'Ctrl'} K</kbd>
         </button>
+        <ThemeToggle />
       </div>
       {requested && (
         <Suspense fallback={null}>

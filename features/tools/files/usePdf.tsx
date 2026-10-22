@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 import { Status } from '@/components/tool-kit/fields';
 import { FileDrop } from '@/components/tool-kit/files';
 import { formatBytes } from '@/lib/format';
@@ -13,9 +13,22 @@ export interface LoadedPdf {
   info: PdfInfo;
 }
 
+const PdfWorkspaceContext = createContext<{ pdf: LoadedPdf | null; setPdf: (value: LoadedPdf | null) => void } | null>(null);
+
+/** Keeps one PDF in memory while a visitor switches actions inside a PDF workspace. */
+export function PdfWorkspaceProvider({ children }: { children: ReactNode }) {
+  const [pdf, setPdf] = useState<LoadedPdf | null>(null);
+  return <PdfWorkspaceContext.Provider value={{ pdf, setPdf }}>{children}</PdfWorkspaceContext.Provider>;
+}
+
+export function usePdfWorkspace() { return useContext(PdfWorkspaceContext); }
+
 /** One-PDF picker: validates, reads page count and metadata, shows errors. */
 export function useSinglePdf() {
-  const [pdf, setPdf] = useState<LoadedPdf | null>(null);
+  const shared = usePdfWorkspace();
+  const [localPdf, setLocalPdf] = useState<LoadedPdf | null>(null);
+  const pdf = shared ? shared.pdf : localPdf;
+  const setPdf = shared ? shared.setPdf : setLocalPdf;
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const picker = (

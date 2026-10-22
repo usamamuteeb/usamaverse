@@ -2,6 +2,9 @@ import type { ToolMeta } from './types';
 import { impl } from './registry.helpers';
 import { batch2 } from './registry.batch2';
 import { pdfTools } from './registry.pdf';
+import { careerTools } from './registry.career';
+import { extraTools } from './registry.extras';
+import { backlogTools } from './registry.backlog';
 
 /**
  * Metadata for tools that are implemented and publicly listed.
@@ -15,7 +18,7 @@ const batch1: ToolMeta[] = [
     name: 'Word & Character Counter',
     category: 'text',
     description: 'Count words, characters (including emoji), sentences, paragraphs and bytes.',
-    aliases: ['character counter', 'char count', 'letter counter', 'word count'],
+    aliases: ['word counter', 'character counter', 'char count', 'letter counter', 'word count'],
     tags: ['count', 'length', 'essay', 'characters'],
     related: ['line-counter', 'reading-time', 'char-frequency'],
     limits: ['Characters are counted as user-perceived characters (grapheme clusters), so 👍🏽 counts as one.', 'Word boundaries come from your browser’s Unicode rules and can differ slightly between browsers.'],
@@ -474,4 +477,4 @@ const batch1: ToolMeta[] = [
   impl({ slug: 'roman-numerals', name: 'Roman Numeral Converter', category: 'language', description: 'Convert numbers 1–3,999 to Roman numerals and back, rejecting non-standard forms.', aliases: ['roman numbers', 'number to roman', 'roman to number'], tags: ['numbers', 'history'], related: ['number-base-converter', 'basic-calculator'] }),
 ];
 
-export const implementedTools: ToolMeta[] = [...batch1, ...batch2, ...pdfTools];
+export const implementedTools: ToolMeta[] = [...batch1, ...batch2, ...pdfTools, ...careerTools, ...extraTools, ...backlogTools];

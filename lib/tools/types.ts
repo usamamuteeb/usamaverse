@@ -17,6 +17,8 @@ export type CategorySlug =
   | 'csv'
   | 'media'
   | 'language'
+  | 'career'
+  | 'latex'
   | 'misc';
 
 export interface ToolMeta {
